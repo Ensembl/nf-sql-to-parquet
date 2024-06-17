@@ -1,0 +1,8 @@
+{
+    "host": "ensembldb.ensembl.org",
+    "port": 3306,
+    "user": "anonymous",
+    "database": "homo_sapiens_core_111_38",
+    "password": "",
+    "species_id": 1
+}

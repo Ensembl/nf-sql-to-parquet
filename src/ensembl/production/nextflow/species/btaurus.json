@@ -1,0 +1,8 @@
+{
+    "host": "ensembldb.ensembl.org",
+    "port": 3306,
+    "user": "anonymous",
+    "database": "bos_taurus_core_112_13",
+    "password": "",
+    "species_id": 1
+}

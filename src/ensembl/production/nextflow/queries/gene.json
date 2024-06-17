@@ -1,0 +1,15 @@
+{
+    "data_type": "gene",
+    "main_sql": "queries/create_parquet/gene.sql",
+    "supplementary_data": {
+        "transcript_list" : "SELECT t.gene_id, IF(ISNULL(t.version), t.stable_id, concat(t.stable_id, '.', t.version)) AS transcript_stable_ids FROM transcript t",
+        "translation_list" : "SELECT t.gene_id, IF(ISNULL(tr.version), tr.stable_id, concat(tr.stable_id, '.', tr.version)) AS translation_stable_ids FROM translation tr JOIN transcript t USING (transcript_id)",
+        "synonyms" : "SELECT g.gene_id, es.synonym FROM gene g LEFT JOIN external_synonym es  ON (g.display_xref_id = es.xref_id)",
+        "GC": "SELECT gene_id, value AS GC_content FROM gene_attrib WHERE attrib_type_id=142",
+        "havana": "SELECT gene_id, value AS havana_cv FROM gene_attrib WHERE attrib_type_id=380",
+        "parent_gene": "SELECT gene_id, value AS proj_parent_gene FROM gene_attrib WHERE attrib_type_id=520",
+        "alternative_name": "SELECT gene_id, value AS alternative_name FROM gene_attrib WHERE attrib_type_id=4"
+
+    },
+    "lookup_key": ["transcript_list", "translation_list", "synonyms"]
+}
