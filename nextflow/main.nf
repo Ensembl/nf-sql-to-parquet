@@ -1,8 +1,13 @@
 #!/usr/bin/env nextflow
+import groovy.json.JsonSlurper
 
 include {
-GenomeInfo;
-} '${prams.ensembl_production_nf_modules}';
+GenomeInfo
+} '${prams.ensembl_production_nf_modules}/productionCommon';
+
+include {
+convertToList
+} '${prams.ensembl_production_nf_modules}/utils';
 
 // Parameter default values
 params.help = false
@@ -22,6 +27,7 @@ println """\
         """
         .stripIndent()
 
+
 def helpMessage() {
   log.info"""
   Usage:
@@ -30,8 +36,13 @@ def helpMessage() {
   """.stripIndent()
 }
 
-
-
+def read_json(json) {
+    def jsonSlurper = new JsonSlurper()
+    def ConfigFile = new File("${json}")
+    String ConfigJSON = ConfigFile.text
+    def myConfig = jsonSlurper.parseText(ConfigJSON)
+    myConfig
+}
 
 
 process SqlToParquet {
@@ -77,18 +88,13 @@ workflow {
     antispecies           = convertToList(params.antispecies)
     dataset_status        = convertToList(params.dataset_status)
     columns               = convertToList(params.columns)
-    mongo_db_shard_uri    = ( ! params.mongo_db_shard_uri ||   params.mongo_db_shard_uri=="") ?  helpMessage() : params.mongo_db_shard_uri
-
-
     output_json     = 'genome_info.json'
+
     GenomeInfo( metadata_db_uri, genome_uuid, dataset_uuid,
                 organism_group_type, division, dataset_type,
                 species, antispecies, dataset_status, update_dataset_status,
                 batch_size, page, columns, output_json
-    )
+    ).view()
 
-
-
-
-    sql_to_parquet(species, queries)
+//     sql_to_parquet(species, queries)
 }
