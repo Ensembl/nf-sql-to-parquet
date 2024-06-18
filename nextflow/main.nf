@@ -98,6 +98,7 @@ process SqlToParquet {
 
 workflow {
 
+    def jsonSlurper       = new groovy.json.JsonSlurper()
     metadata_db_uri       = params.metadata_db_uri
     update_dataset_status = params.update_dataset_status
     batch_size            = params.batch_size
@@ -117,7 +118,13 @@ workflow {
                 organism_group_type, division, dataset_type,
                 species, antispecies, dataset_status, update_dataset_status,
                 batch_size, page, columns, output_json
-    ).view()
+    )
 
-//     sql_to_parquet(species, queries)
+    genomes_ch = GenomeInfo.out[0].splitText().map {
+                    genome_json = jsonSlurper.parseText(it.replaceAll('\n', ''))
+                    return [genome_json['genome_uuid'], genome_json['species'], genome_json['database_name']]
+                }.map { it }
+
+   genomes_ch.view( {it} )
+  //sql_to_parquet(species, queries)
 }
