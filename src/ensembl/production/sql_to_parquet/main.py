@@ -5,8 +5,8 @@ import sys
 import argparse
 from time import time
 
-from query import ConnectionMySQL, Query, logging
-from config_json import Config
+from src.ensembl.production.sql_to_parquet.query import ConnectionMySQL, Query, logging
+from src.ensembl.production.sql_to_parquet.config_json import Config
 
 ### Parse arguments
 parser = argparse.ArgumentParser(description='SQL to Parquet')

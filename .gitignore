@@ -142,3 +142,7 @@ cython_debug/
 
 .DS_Store
 .python-version
+
+#ignore intelliJ version control files 
+.idea/
+.idea/*
