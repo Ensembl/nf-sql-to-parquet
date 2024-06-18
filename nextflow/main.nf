@@ -24,6 +24,23 @@ println """\
         core_db_host_uri =  ${param.core_db_host_uri}
         metadata_db_uri  =  ${param.metadata_db_uri}
         production_nf_base = ${prams.ensembl_production_nf_base}
+        nf_py_script_path = ${params.nf_py_script_path}
+        #########################################################
+        Metadata Params
+        #########################################################
+        params.genome_uuid           = ${params.genome_uuid}
+        params.dataset_uuid          = ${params.dataset_uuid}
+        params.organism_group_type   = ${params.organism_group_type}
+        params.division              = ${params.division}
+        params.dataset_type          = ${params.dataset_type}
+        params.species               = ${params.species}
+        params.antispecies           = ${params.antispecies}
+        params.dataset_status        = ${params.dataset_status}
+        params.update_dataset_status = ${params.update_dataset_status}
+        params.batch_size            = ${params.batch_size}
+        params.page                  = ${params.page}
+        params.columns               = ${params.columns}
+        params.metadata_db_uri       = ${params.metadata_db_uri}
         """
         .stripIndent()
 
@@ -88,7 +105,7 @@ workflow {
     antispecies           = convertToList(params.antispecies)
     dataset_status        = convertToList(params.dataset_status)
     columns               = convertToList(params.columns)
-    output_json     = 'genome_info.json'
+    output_json           = 'genome_info.json'
 
     GenomeInfo( metadata_db_uri, genome_uuid, dataset_uuid,
                 organism_group_type, division, dataset_type,
