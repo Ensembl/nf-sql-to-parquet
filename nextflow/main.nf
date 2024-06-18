@@ -1,29 +1,33 @@
 #!/usr/bin/env nextflow
 import groovy.json.JsonSlurper
+nextflow.enable.dsl=2
 
 include {
-GenomeInfo
-} '${prams.ensembl_production_nf_modules}/productionCommon';
+  GenomeInfo;
+} from "${params.ensembl_production_nf_modules}/productionCommon";
 
 include {
-convertToList
-} '${prams.ensembl_production_nf_modules}/utils';
+  convertToList;
+} from "${params.ensembl_production_nf_modules}/utils";
+
+
+
 
 // Parameter default values
 params.help = false
 println """\
         Parquet File Generation Pipeline
         =================================
-        pipeline_dir     =  ${param.pipeline_dir}
-        user             =  ${param.user}
-        email            =  ${param.email}
-        base_dir         =  ${param.base_dir}
-        scripts_dir      =  ${param.script_dir}
-        query_dir        =  ${param.query_dir}
-        output_dir       =  ${param.output_dir}
-        core_db_host_uri =  ${param.core_db_host_uri}
-        metadata_db_uri  =  ${param.metadata_db_uri}
-        production_nf_base = ${prams.ensembl_production_nf_base}
+        pipeline_dir     =  ${params.pipeline_dir}
+        user             =  ${params.user}
+        email            =  ${params.email}
+        base_dir         =  ${params.base_dir}
+        scripts_dir      =  ${params.scripts_dir}
+        query_dir        =  ${params.query_dir}
+        output_dir       =  ${params.output_dir}
+        core_db_host_uri =  ${params.core_db_host_uri}
+        metadata_db_uri  =  ${params.metadata_db_uri}
+        production_nf_base = ${params.ensembl_production_nf_base}
         nf_py_script_path = ${params.nf_py_script_path}
         #########################################################
         Metadata Params
@@ -43,6 +47,8 @@ println """\
         params.metadata_db_uri       = ${params.metadata_db_uri}
         """
         .stripIndent()
+
+println("${params.ensembl_production_nf_modules}/productionCommon")
 
 
 def helpMessage() {
