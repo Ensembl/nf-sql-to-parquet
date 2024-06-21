@@ -44,7 +44,8 @@ classifiers = [
 dependencies = [
     "pandas",
     "pymysql",
-    "pyarrow"
+    "pyarrow",
+    "sqlalchemy"
 ]
 
 [project.optional-dependencies]
