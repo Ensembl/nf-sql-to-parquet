@@ -29,15 +29,14 @@ class ConnectionMySQL:
 class Query:
     """ General functions for SQL queries """
     def __init__(self, engine, sql, target_dir, 
-                 data_type, supplementary_data=None, lookup_key=None, species_id=None, prod_name=None):
+                 data_type, supplementary_data=None, lookup_key=None, prod_name=None):
         self.engine = engine
         try:
-            if species_id is None and prod_name is None:
+            if prod_name is None:
                 raise NoSpeciesException
         except NoSpeciesException:
-            logging.error('No species id or production name was given')
+            logging.error('No production name was given')
             raise
-        self.species_id = species_id
         self._prod_name = prod_name
         self._sql = sql
         self.target_dir = target_dir
@@ -47,38 +46,21 @@ class Query:
 
     @property
     def prod_name(self):
-        """" Retrieve production name using species_id if prod_name is not defined """
-        if self._prod_name is None:
-            logging.debug("Setting prod_name using species_id")
-            t = """SELECT meta_value FROM meta
-                WHERE meta_key = 'species.production_name' 
-                AND species_id = :species_id"""
-            stmt = text(t)
-            stmt = stmt.bindparams(bindparam('species_id'))
-            params = { 'species_id' : self.species_id }
-            try:
-                df = pd.read_sql(stmt, con=self.engine, params=params)
-                if df.empty:
-                    raise ValueError("Species ID is invalid")
-            except ValueError as ve:
-                logging.error('Value error: %s', ve)
-                raise
-            self._prod_name = df.iat[0,0]
-        else:
-            logging.debug("Checking prod_name validity")
-            t = """SELECT meta_value FROM meta
-                WHERE meta_key='species.production_name' 
-                AND meta_value = :production_name"""
-            stmt = text(t)
-            stmt = stmt.bindparams(bindparam('production_name'))
-            params = {'production_name': self._prod_name}
-            try:
-                df = pd.read_sql(stmt, con=self.engine, params=params)
-                if df.empty:
-                    raise ValueError("Production name is invalid")
-            except ValueError as ve:
-                logging.error('Value error: %s', ve)
-                raise
+        """" Check production name """
+        logging.debug("Checking prod_name validity")
+        t = """SELECT meta_value FROM meta
+            WHERE meta_key='species.production_name' 
+            AND meta_value = :production_name"""
+        stmt = text(t)
+        stmt = stmt.bindparams(bindparam('production_name'))
+        params = {'production_name': self._prod_name}
+        try:
+            df = pd.read_sql(stmt, con=self.engine, params=params)
+            if df.empty:
+                raise ValueError("Production name is invalid")
+        except ValueError as ve:
+            logging.error('Value error: %s', ve)
+            raise
         return self._prod_name
     
     @property
