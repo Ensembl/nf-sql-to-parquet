@@ -84,8 +84,9 @@ class Query:
     @property
     def sql(self):
         """ read sql file """
-        with open(self._sql, 'r') as sql_file:
-            self._sql = sql_file.read()
+        if self._sql.split('.')[-1] == 'sql':
+            with open(self._sql, 'r') as sql_file:
+                self._sql = sql_file.read()
         return self._sql
 
     @staticmethod
