@@ -15,7 +15,7 @@
 [project]
 name = "nf-sql-to-parquet"
 description = "Convert SQL request to Parquet"
-requires-python = ">= 3.8"
+requires-python = ">= 3.9"
 dynamic = [
     "version",
 ]
