@@ -101,6 +101,7 @@ class Query:
     def supplementary_lookups(self):
         """ Build a dict containing supplementary lookups data """
         d = {}
+        # Check if there are parameters for the query
         for key, val in self.supplementary_data.items():
             if isinstance(val, list):
                 params = val[1]
@@ -110,7 +111,7 @@ class Query:
                 params = None
             df = self.get_data(sql, engine=self.engine, params = params)
             df = df.dropna()
-            df = df.groupby(df.columns[0]).agg(list)
+            df = df.groupby(df.columns[0]).agg(set)
             d[key] = df
         return d
 
