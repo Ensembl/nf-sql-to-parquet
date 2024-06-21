@@ -37,31 +37,12 @@ class Query:
         except NoSpeciesException:
             logging.error('No production name was given')
             raise
-        self._prod_name = prod_name
+        self.prod_name = prod_name
         self._sql = sql
         self.target_dir = target_dir
         self.supplementary_data = supplementary_data
         self.lookup_key = lookup_key
         self.data_type = data_type
-
-    @property
-    def prod_name(self):
-        """" Check production name """
-        logging.debug("Checking prod_name validity")
-        t = """SELECT meta_value FROM meta
-            WHERE meta_key='species.production_name' 
-            AND meta_value = :production_name"""
-        stmt = text(t)
-        stmt = stmt.bindparams(bindparam('production_name'))
-        params = {'production_name': self._prod_name}
-        try:
-            df = pd.read_sql(stmt, con=self.engine, params=params)
-            if df.empty:
-                raise ValueError("Production name is invalid")
-        except ValueError as ve:
-            logging.error('Value error: %s', ve)
-            raise
-        return self._prod_name
     
     @property
     def sql(self):
@@ -103,7 +84,7 @@ class Query:
         dir_path = os.path.join(self.target_dir, self.data_type, f'species={self.prod_name}')
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
-        filename = self._prod_name + "_" + self.data_type + ".parquet"
+        filename = self.data_type + ".parquet"
         output = os.path.join(dir_path, filename)
         ## write
         table = pa.Table.from_pandas(df)
