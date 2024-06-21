@@ -69,10 +69,11 @@ def read_json(json) {
 
 
 process SqlToParquet {
+    label 'mem4GB'
     publishDir "results", mode: 'copy'
 
     input:
-    val species
+    tuple(val(genome_uuid), val(production_name), val(database))
     each query
 
     output:
@@ -82,17 +83,13 @@ process SqlToParquet {
     // get SQL script absolute path
     def query_config = read_json("${query}")
     if ( "${query_config.main_sql}".split("\\.")[-1] == "sql" ){
-        sql_file = new File("${query_config.main_sql}")
-        sql = sql_file.canonicalPath
+        sql = "${params.scripts_dir}/${query_config.main_sql}"
     } else {
         sql = "${query_config.main_sql}"
     }
-    // get species or production name
-    def species_config = read_json("${species}")
-    def species_id = species_config.containsKey("species_id") ? "-s ${species_config.species_id}" : ""
-    def production_name = species_config.containsKey("production_name") ? "-pn ${species_config.production_name}" : ""
+    
     """
-    main.py -sc $species -qc $query -q $sql -o ${params.target_dir} $species_id $production_name
+    ${params.scripts_dir}/main.py --query_config $query --main_query $sql -o ${params.target_dir} --genome_uuid $genome_uuid --production_name $production_name --core_uri ${params.core_db_host_uri} --database $database
     """
 }
 
@@ -126,5 +123,7 @@ workflow {
                 }.map { it }
 
    genomes_ch.view( {it} )
-  //sql_to_parquet(species, queries)
+
+   queries_ch = Channel.fromPath("${params.query_dir}/*.json", checkIfExists: true)
+   SqlToParquet(genomes_ch, queries_ch)
 }

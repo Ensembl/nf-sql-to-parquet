@@ -9,15 +9,15 @@ from src.ensembl.production.sql_to_parquet.query import ConnectionMySQL, Query, 
 from src.ensembl.production.sql_to_parquet.config_json import Config
 
 ### Parse arguments
-parser = argparse.ArgumentParser(description='SQL to Parquet')
-# Species
-parser.add_argument('-s', type=int, default=None, help='Species ID')
-parser.add_argument('-pn', type=str, default=None, help='Production name')
+parser = argparse.ArgumentParser(description='Convert SQL to Parquet')
 # Database config
-parser.add_argument('-sc', type=str, help='Species and database config JSON format')
+parser.add_argument('--core_uri', type=str, help='Core database mysql URI')
+parser.add_argument('--database', type=str, help='Connect to database')
+parser.add_argument('--genome_uuid', type=str, help='Genome UUID')
+parser.add_argument('--production_name', type=str, help='Production name')
 # SQL config
-parser.add_argument('-q', type=str, help='SQL query')
-parser.add_argument('-qc', type=str, help='Query JSON config')
+parser.add_argument('--main_query', type=str, help='SQL query')
+parser.add_argument('--query_config', type=str, help='Query JSON config')
 # Writing Parquet
 parser.add_argument('-o', type=str, default='.', help='Output directory')
 
@@ -30,23 +30,18 @@ def main():
 
     args = parser.parse_args()
     ## Read config
-    connection = Config(args.sc).config_species()
-    data = Config(args.qc).config_query()
+    query_config = Config(args.query_config).config_query()
 
-    conn = ConnectionMySQL(host = connection["host"],
-                user = connection["user"],
-                database = connection["database"],
-                port = connection["port"],
-                password = connection["password"]).connect()
+    conn = ConnectionMySQL(core_uri = args.core_uri,
+                database = args.database).connect()
 
     Query(engine = conn,
-          species_id = args.s,
-          prod_name = args.pn,
+          prod_name = args.production_name,
           target_dir = args.o,
-          data_type = data["data_type"],
-          sql = args.q,
-          supplementary_data = data["supplementary_data"],
-          lookup_key = data["lookup_key"]).execute()
+          data_type = query_config["data_type"],
+          sql = args.main_query,
+          supplementary_data = query_config["supplementary_data"],
+          lookup_key = query_config["lookup_key"]).execute()
 
 if __name__ == "__main__":
     start = time()

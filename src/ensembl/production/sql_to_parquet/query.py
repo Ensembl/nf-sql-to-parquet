@@ -15,16 +15,13 @@ class InvalidQueryException(Exception):
 #### Connector to database
 class ConnectionMySQL:
     """ Create engine to connect to MySQL database """
-    def __init__(self, host, database, port, user, password):
-        self.host= host
+    def __init__(self, core_uri, database):
+        self.core_uri = core_uri.replace('mysql://', '')
         self.database = database
-        self.port = port
-        self.user = user
-        self.password = password
 
     def connect(self):
         """ Connect to MySQL database using SQLAlchemy """
-        db_connection_str = f'mysql+pymysql://{self.user}@{self.host}:{self.port}/{self.database}'
+        db_connection_str = f'mysql+pymysql://{self.core_uri}/{self.database}'
         engine = create_engine(db_connection_str)
         return engine
 
@@ -87,9 +84,6 @@ class Query:
     @property
     def sql(self):
         """ read sql file """
-        # if self._sql.split('.')[-1] == 'sql':
-        #     full_path = os.path.abspath(self._sql)
-        #     print(full_path)
         with open(self._sql, 'r') as sql_file:
             self._sql = sql_file.read()
         return self._sql
