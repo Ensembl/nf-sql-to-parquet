@@ -40,8 +40,7 @@ def main():
           target_dir = args.o,
           data_type = query_config["data_type"],
           sql = args.main_query,
-          supplementary_data = query_config["supplementary_data"],
-          lookup_key = query_config["lookup_key"]).execute()
+          supplementary_data = query_config["supplementary_data"]).execute()
 
 if __name__ == "__main__":
     start = time()
