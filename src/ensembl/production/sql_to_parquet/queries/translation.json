@@ -3,6 +3,5 @@
     "main_sql": "queries/create_parquet/translation.sql",
     "supplementary_data": {
         "GO": "select tr.translation_id, x.display_label AS go_terms from translation tr join transcript t on (tr.transcript_id = t.transcript_id) join object_xref ox on (t.transcript_id = ox.ensembl_id and ox.ensembl_object_type = 'Transcript') join xref x on (ox.xref_id = x.xref_id)  where x.external_db_id = 1000"
-    },
-    "lookup_key": ["miRNA_coordinates", "frameshift", "ncRNA"]
+    }
 }

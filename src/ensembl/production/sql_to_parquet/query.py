@@ -29,7 +29,7 @@ class ConnectionMySQL:
 class Query:
     """ General functions for SQL queries """
     def __init__(self, engine, sql, target_dir, 
-                 data_type, supplementary_data=None, lookup_key=None, prod_name=None):
+                 data_type, supplementary_data=None, prod_name=None):
         self.engine = engine
         try:
             if prod_name is None:
@@ -41,7 +41,6 @@ class Query:
         self._sql = sql
         self.target_dir = target_dir
         self.supplementary_data = supplementary_data
-        self.lookup_key = lookup_key
         self.data_type = data_type
     
     @property
@@ -95,7 +94,6 @@ class Query:
         main_df = self.get_data(self.sql, self.engine, params={"production_name" : self.prod_name})
         if self.supplementary_data is not None:
             d = self.supplementary_lookups()
-            # for i in self.lookup_key:
             for i in d.values():
                 if not i.empty:
                     main_df = pd.merge(main_df, i, left_on=main_df.columns[0], right_index=True, how='left')
