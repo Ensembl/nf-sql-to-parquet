@@ -1,7 +1,7 @@
 -- parquet gene table
 SELECT
     g.gene_id,
-    g.stable_id,
+    IF(ISNULL(g.version), g.stable_id, concat(g.stable_id, '.', g.version)) AS stable_id,
     sr.name AS region_name,
     g.seq_region_start AS start,
     g.seq_region_end AS end,
