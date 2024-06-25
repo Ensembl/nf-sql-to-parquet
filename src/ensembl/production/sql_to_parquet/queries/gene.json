@@ -5,11 +5,11 @@
         "transcript_list" : "SELECT t.gene_id, IF(ISNULL(t.version), t.stable_id, concat(t.stable_id, '.', t.version)) AS transcript_stable_ids FROM transcript t",
         "translation_list" : "SELECT t.gene_id, IF(ISNULL(tr.version), tr.stable_id, concat(tr.stable_id, '.', tr.version)) AS translation_stable_ids FROM translation tr JOIN transcript t USING (transcript_id)",
         "synonyms" : "SELECT g.gene_id, es.synonym FROM gene g LEFT JOIN external_synonym es  ON (g.display_xref_id = es.xref_id)",
-        "GC": "SELECT gene_id, value AS GC_content FROM gene_attrib WHERE attrib_type_id=142",
-        "havana": "SELECT gene_id, value AS havana_cv FROM gene_attrib WHERE attrib_type_id=380",
-        "parent_gene": "SELECT gene_id, value AS proj_parent_gene FROM gene_attrib WHERE attrib_type_id=520",
-        "alternative_name": "SELECT gene_id, value AS alternative_name FROM gene_attrib WHERE attrib_type_id=4",
-        "GO": "select g.gene_id, x.display_label AS go_terms from gene g join transcript t on (g.gene_id = t.gene_id) join object_xref ox on (t.transcript_id = ox.ensembl_id and ox.ensembl_object_type = 'Transcript') join xref x on (ox.xref_id = x.xref_id) where x.external_db_id = 1000"
+        "GC": "SELECT gene_id, value AS GC_content FROM gene_attrib JOIN attrib_type at WHERE at.code = 'GeneGC'",
+        "havana": "SELECT gene_id, value AS havana_cv FROM gene_attrib JOIN attrib_type at WHERE at.code = 'havana_cv'",
+        "parent_gene": "SELECT gene_id, value AS proj_parent_gene FROM gene_attrib JOIN attrib_type at WHERE at.code = 'proj_parent_g'",
+        "alternative_name": "SELECT gene_id, value AS alternative_name FROM gene_attrib JOIN attrib_type at WHERE at.code = 'name'",
+        "GO": "select g.gene_id, x.display_label AS go_terms from gene g join transcript t on (g.gene_id = t.gene_id) join object_xref ox on (t.transcript_id = ox.ensembl_id and ox.ensembl_object_type = 'Transcript') join xref x on (ox.xref_id = x.xref_id) join external_db edb using (external_db_id) where edb.db_name = 'GO'"
 
     }
 }
