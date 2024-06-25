@@ -1,6 +1,7 @@
 -- table_name = "translation"
 SELECT
-    tr.stable_id,
+    tr.translation_id,
+    IF(ISNULL(tr.version), tr.stable_id, concat(tr.stable_id, '.', tr.version)) AS stable_id,
     tr.seq_start as start,
     tr.seq_end as end
 FROM
@@ -13,4 +14,4 @@ FROM
         and m.meta_key = "species.production_name"
     )
 WHERE
-    m.meta_value = %s
+    m.meta_value = %(production_name)s

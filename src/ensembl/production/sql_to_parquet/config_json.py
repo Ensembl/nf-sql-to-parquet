@@ -12,8 +12,3 @@ class Config:
                 if not k in data:
                     data[k] = None
         return data
-    
-    def config_species(self):
-        with open(self.json, "r", encoding="utf-8") as read_file:
-            data = json.load(read_file)
-        return data

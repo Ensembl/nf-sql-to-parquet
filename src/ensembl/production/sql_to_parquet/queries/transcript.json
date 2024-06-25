@@ -2,12 +2,11 @@
     "data_type": "transcript",
     "main_sql": "queries/create_parquet/transcript.sql",
     "supplementary_data": {
-        "miRNA_coordinates": "SELECT transcript_id,value as miRNA_coordinates FROM transcript_attrib WHERE attrib_type_id=15",
-        "frameshift": "SELECT transcript_id, value AS frameshift FROM transcript_attrib  WHERE attrib_type_id=59",
-        "ncRNA": "SELECT transcript_id, value AS ncRNA FROM transcript_attrib WHERE attrib_type_id=62",
-        "MANE_select": "SELECT transcript_id, value AS MANE_select FROM transcript_attrib WHERE attrib_type_id=535",
-        "MANE_plus_clinical": "SELECT transcript_id, value AS MANE_plus_clinical FROM transcript_attrib WHERE attrib_type_id=550"
-    },
-    "lookup_key": ["miRNA_coordinates", "frameshift", "ncRNA"]
+        "miRNA_coordinates": "SELECT transcript_id,value as miRNA_coordinates FROM transcript_attrib JOIN attrib_type at USING (attrib_type_id) WHERE at.code = 'miRNA'",
+        "frameshift": "SELECT transcript_id, value AS frameshift FROM transcript_attrib JOIN attrib_type at USING (attrib_type_id) WHERE at.code = 'Frameshift'",
+        "ncRNA": "SELECT transcript_id, value AS ncRNA FROM transcript_attrib JOIN attrib_type at USING (attrib_type_id) WHERE at.code = 'ncRNA'",
+        "MANE_select": "SELECT transcript_id, value AS MANE_select FROM transcript_attrib JOIN attrib_type at USING (attrib_type_id) WHERE at.code = 'MANE_Select'",
+        "MANE_plus_clinical": "SELECT transcript_id, value AS MANE_plus_clinical FROM transcript_attrib JOIN attrib_type at USING (attrib_type_id) WHERE at.code = 'MANE_Plus_Clinical'",
+        "GO": "select t.transcript_id, x.display_label AS go_terms from transcript t join object_xref ox on (t.transcript_id = ox.ensembl_id and ox.ensembl_object_type = 'Transcript') join xref x on (ox.xref_id = x.xref_id) join external_db edb using (external_db_id) where edb.db_name = 'GO'"
+    }
 }
-

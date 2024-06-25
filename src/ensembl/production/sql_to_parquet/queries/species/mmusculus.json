@@ -1,8 +1,0 @@
-{
-    "host": "ensembldb.ensembl.org",
-    "port": 3306,
-    "user": "anonymous",
-    "database": "mus_musculus_core_106_39",
-    "password": "",
-    "production_name": "mus_musculus"    
-}
