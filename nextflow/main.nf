@@ -69,8 +69,10 @@ def read_json(json) {
 
 
 process SqlToParquet {
-    label 'mem4GB'
-    publishDir "results", mode: 'copy'
+    label 'mem2GB'
+    publishDir "${params.output_dir}", mode: 'copy'
+    
+    tag {"$production_name - $query"}
 
     input:
     tuple(val(genome_uuid), val(production_name), val(database))
@@ -121,8 +123,6 @@ workflow {
                     genome_json = jsonSlurper.parseText(it.replaceAll('\n', ''))
                     return [genome_json['genome_uuid'], genome_json['species'], genome_json['database_name']]
                 }.map { it }
-
-   genomes_ch.view( {it} )
 
    queries_ch = Channel.fromPath("${params.query_dir}/*.json", checkIfExists: true)
    SqlToParquet(genomes_ch, queries_ch)
