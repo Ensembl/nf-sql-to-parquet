@@ -21,7 +21,7 @@ class ConnectionMySQL:
 
     def connect(self):
         """ Connect to MySQL database using SQLAlchemy """
-        db_connection_str = f'mysql+pymysql://{self.core_uri}/{self.database}'
+        db_connection_str = f'mysql+pymysql://{self.core_uri}{self.database}'
         engine = create_engine(db_connection_str)
         return engine
 
@@ -54,7 +54,6 @@ class Query:
     @staticmethod
     def get_data(sql, engine, params = None):
         """ SQL query using SQLAlchemy """
-        # try:
         df = pd.read_sql(sql, con=engine, params=params)
         if df.empty:
             logging.info('Query has no results')
@@ -85,17 +84,19 @@ class Query:
             os.makedirs(dir_path)
         filename = self.data_type + ".parquet"
         output = os.path.join(dir_path, filename)
-        ## write
+        ## write table in parquet format
         table = pa.Table.from_pandas(df)
         pq.write_table(table, output)
 
     def execute(self):
         """ Get all the data and write a Parquet file """
         main_df = self.get_data(self.sql, self.engine, params={"production_name" : self.prod_name})
+        n = len(main_df.columns)
         if self.supplementary_data is not None:
             d = self.supplementary_lookups()
-            for i in d.values():
-                if not i.empty:
-                    main_df = pd.merge(main_df, i, left_on=main_df.columns[0], right_index=True, how='left')
+            for df in d.values():
+                main_df = pd.merge(main_df, df, left_on=main_df.columns[0], right_index=True, how='left')
+            for col in main_df.columns[n:]:
+                main_df[col] = main_df[col].fillna("").apply(set)
         main_df["species"] = self.prod_name
         self.write_parquet(main_df)
