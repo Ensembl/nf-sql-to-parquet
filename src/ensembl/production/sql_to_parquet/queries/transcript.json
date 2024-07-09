@@ -2,6 +2,7 @@
     "data_type": "transcript",
     "main_sql": "queries/create_parquet/transcript.sql",
     "supplementary_data": {
+        "translation_stable_ids" : "SELECT t.transcript_id, IF(ISNULL(tr.version), tr.stable_id, concat(tr.stable_id, '.', tr.version)) AS translation_stable_ids FROM translation tr LEFT JOIN transcript t USING (transcript_id)",
         "miRNA_coordinates": "SELECT transcript_id,value as miRNA_coordinates FROM transcript_attrib JOIN attrib_type at USING (attrib_type_id) WHERE at.code = 'miRNA'",
         "frameshift": "SELECT transcript_id, value AS frameshift FROM transcript_attrib JOIN attrib_type at USING (attrib_type_id) WHERE at.code = 'Frameshift'",
         "ncRNA": "SELECT transcript_id, value AS ncRNA FROM transcript_attrib JOIN attrib_type at USING (attrib_type_id) WHERE at.code = 'ncRNA'",
