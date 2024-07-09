@@ -5,6 +5,8 @@ from sqlalchemy import create_engine, bindparam, text
 import pyarrow as pa
 import pyarrow.parquet as pq
 
+from table_schema import GeneSchema, TranscriptSchema, TranslationSchema
+
 #### User-defined exception
 class NoSpeciesException(Exception):
     """ Raised when no species ID and production name were defined"""
@@ -84,8 +86,15 @@ class Query:
             os.makedirs(dir_path)
         filename = self.data_type + ".parquet"
         output = os.path.join(dir_path, filename)
-        ## write table in parquet format
-        table = pa.Table.from_pandas(df)
+        # Convert the DataFrame to an Arrow Table using the defined schema
+        if self.data_type == 'gene':
+            schema = GeneSchema().schema
+        elif self.data_type == 'transcript':
+            schema = TranscriptSchema().schema
+        elif self.data_type == 'translation':
+            schema = TranslationSchema().schema
+        table = pa.Table.from_pandas(df, schema=schema)
+        ## Write table to parquet
         pq.write_table(table, output)
 
     def execute(self):
