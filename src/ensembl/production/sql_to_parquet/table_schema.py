@@ -1,6 +1,6 @@
 import pyarrow as pa
 
-class GeneSchema():
+class GeneSchema:
     def __init__(self) -> None:
         self.schema = pa.schema([
             ('gene_id', pa.int64()),
@@ -66,3 +66,25 @@ class TranslationSchema:
 
             ('species', pa.string()),
         ])
+
+class ComparaSchema:
+    def __init__(self) -> None:
+        self.schema = pa.schema([
+            ('homology_id', pa.int64()),
+            ('description', pa.string()),
+            ('type', pa.string()),
+            ('dn', pa.int64()),
+            ('ds', pa.int64()),
+            ('goc_score', pa.int8()),
+            ('wga_coverage', pa.int64()),
+            ('is_high_confidence', pa.int8),
+            ('stable_id', pa.string()),
+            ('perc_cov', pa.int64()),
+            ('perc_id', pa.int64()),
+            ('homologue_stable_id', pa.string()),
+            ('homologue_perc_cov', pa.int64()),
+            ('homologue_perc_id', pa.int64()),
+
+            ('species', pa.string()),
+        ])
+

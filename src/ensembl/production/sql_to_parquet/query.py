@@ -5,7 +5,7 @@ from sqlalchemy import create_engine, bindparam, text
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-from table_schema import GeneSchema, TranscriptSchema, TranslationSchema
+from table_schema import GeneSchema, TranscriptSchema, TranslationSchema, ComparaSchema
 
 #### User-defined exception
 class NoSpeciesException(Exception):
@@ -78,6 +78,19 @@ class Query:
             d[key] = df
         return d
 
+    @staticmethod
+    def get_schema(self):
+        """ Get schema for Parquet """
+        schema_type = self.data_type.capitalize()
+        schema = f'{schema_type}Schema'
+        return schema
+        # if self.data_type == 'gene':
+        #     schema = GeneSchema().schema
+        # elif self.data_type == 'transcript':
+        #     schema = TranscriptSchema().schema
+        # elif self.data_type == 'translation':
+        #     schema = TranslationSchema().schema
+
     def write_parquet(self, df):
         """ Write dataframe in Parquet format """
         ## get path and name
@@ -87,19 +100,20 @@ class Query:
         filename = self.data_type + ".parquet"
         output = os.path.join(dir_path, filename)
         # Convert the DataFrame to an Arrow Table using the defined schema
-        if self.data_type == 'gene':
-            schema = GeneSchema().schema
-        elif self.data_type == 'transcript':
-            schema = TranscriptSchema().schema
-        elif self.data_type == 'translation':
-            schema = TranslationSchema().schema
+        schema_type = self.data_type
+        schema_str = f'{schema_type.capitalize()}Schema'
+        schema = locals()[schema_str]().schema
+
         table = pa.Table.from_pandas(df, schema=schema)
         ## Write table to parquet
         pq.write_table(table, output)
 
     def execute(self):
         """ Get all the data and write a Parquet file """
-        main_df = self.get_data(self.sql, self.engine, params={"production_name" : self.prod_name})
+        if self.data_type == "compara":
+            main_df = self.get_data(self.sql, self.engine)
+        else:
+            main_df = self.get_data(self.sql, self.engine, params={"production_name" : self.prod_name})
         n = len(main_df.columns)
         if self.supplementary_data is not None:
             d = self.supplementary_lookups()
