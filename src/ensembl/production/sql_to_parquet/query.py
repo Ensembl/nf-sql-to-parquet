@@ -5,7 +5,7 @@ from sqlalchemy import create_engine, bindparam, text
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-from src.ensembl.production.sql_to_parquet.table_schema import GeneSchema, TranscriptSchema, TranslationSchema, ComparaSchema
+from table_schema import GeneSchema, TranscriptSchema, TranslationSchema, ComparaSchema
 
 #### User-defined exception
 class NoSpeciesException(Exception):
