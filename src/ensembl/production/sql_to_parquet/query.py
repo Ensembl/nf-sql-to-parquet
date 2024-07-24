@@ -5,7 +5,7 @@ from sqlalchemy import create_engine, bindparam, text
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-from table_schema import GeneSchema, TranscriptSchema, TranslationSchema, ComparaSchema
+from src.ensembl.production.sql_to_parquet.table_schema import GeneSchema, TranscriptSchema, TranslationSchema, ComparaSchema
 
 #### User-defined exception
 class NoSpeciesException(Exception):
@@ -90,7 +90,7 @@ class Query:
         ## Get schema from corresponding class
         schema_type = self.data_type
         schema_str = f'{schema_type.capitalize()}Schema'
-        schema = locals()[schema_str]().schema
+        schema = globals()[schema_str]().schema
 
         table = pa.Table.from_pandas(df, schema=schema)
         ## Write table to parquet
