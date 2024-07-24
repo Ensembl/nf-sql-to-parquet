@@ -146,7 +146,6 @@ workflow {
                     genome_json = jsonSlurper.parseText(it.replaceAll('\n', ''))
                     return [genome_json['genome_uuid'], genome_json['species'], genome_json['database_name']]
                 }.map { it }
-                .view()
 
    queries_ch = Channel.fromPath("${params.query_dir}/*.json", checkIfExists: true)
    SqlToParquet(genomes_ch, queries_ch)
