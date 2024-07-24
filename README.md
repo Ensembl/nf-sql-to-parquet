@@ -11,9 +11,9 @@ Each SQL query has a JSON config, following this model:
     "data_type": "transcript",
     "main_sql": "queries/create_parquet/transcript.sql",
     "supplementary_data": {
-        "miRNA_coordinates": "SELECT transcript_id,value as miRNA_coordinates FROM transcript_attrib WHERE attrib_type_id=15",
-        "frameshift": "SELECT transcript_id, value AS frameshift FROM transcript_attrib  WHERE attrib_type_id=59",
-        "ncRNA": "SELECT transcript_id, value AS ncRNA FROM transcript_attrib WHERE attrib_type_id=62"
+         "miRNA_coordinates": "SELECT transcript_id,value as miRNA_coordinates FROM transcript_attrib WHERE attrib_type_id=15",
+         "frameshift": "SELECT transcript_id, value AS frameshift FROM transcript_attrib  WHERE attrib_type_id=59",
+         "ncRNA": "SELECT transcript_id, value AS ncRNA FROM transcript_attrib WHERE attrib_type_id=62"
     }
 }
 ```
@@ -46,17 +46,17 @@ Outputs are partitioned by species and organised this way:
 parquet_output
 	├── gene
 	|	├── species=species_1
-	|	|   └── gene.parquet
+	|	|	└── gene.parquet
 	|	└── species=species_2
-    |       └── gene.parquet
+	|	└── gene.parquet
 	├── transcript
 	|	├── species=species_1
-	|	|   └── transcript.parquet
+	|	|	└── transcript.parquet
 	|	└── species=species_2
-    |       └── transcript.parquet
-    └── translation
+	|		└── transcript.parquet
+	└── translation
 		├── species=species_1
-		|   └── transcript.parquet
+		|	└── transcript.parquet
 		└── species=species_2
-            └── transcript.parquet
+			└── transcript.parquet
 ```
