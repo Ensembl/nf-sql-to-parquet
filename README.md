@@ -56,7 +56,7 @@ parquet_output
 	|		└── transcript.parquet
 	└── translation
 		├── species=species_1
-		|	└── transcript.parquet
+		|	└── translation.parquet
 		└── species=species_2
-			└── transcript.parquet
+			└── translation.parquet
 ```
