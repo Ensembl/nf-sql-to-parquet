@@ -81,9 +81,10 @@ class ComparaSchema:
             ('stable_id', pa.string()),
             ('perc_cov', pa.float64()),
             ('perc_id', pa.float64()),
-            ('homologue_stable_id', pa.string()),
-            ('homologue_perc_cov', pa.float64()),
-            ('homologue_perc_id', pa.float64()),
+            ('homolog_stable_id', pa.string()),
+            ('homolog_species', pa.string()),
+            ('homolog_perc_cov', pa.float64()),
+            ('homolog_perc_id', pa.float64()),
             # Partition column
             ('species', pa.string())
         ])

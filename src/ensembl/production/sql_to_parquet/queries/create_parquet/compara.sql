@@ -10,9 +10,9 @@ h.wga_coverage,
 h.is_high_confidence,
 IF(ISNULL(gm1.version), gm1.stable_id, concat(gm1.stable_id, '.', gm1.version)) as stable_id, 
 hm1.perc_cov as perc_cov, hm1.perc_id as perc_id, 
-IF(ISNULL(gm2.version), gm2.stable_id, concat(gm2.stable_id, '.', gm2.version)) as homologue_stable_id, 
-gd2.name as homologue_species, 
-hm2.perc_cov as homologue_perc_cov, hm2.perc_id as homologue_perc_id
+IF(ISNULL(gm2.version), gm2.stable_id, concat(gm2.stable_id, '.', gm2.version)) as homolog_stable_id, 
+gd2.name as homolog_species, 
+hm2.perc_cov as homolog_perc_cov, hm2.perc_id as homolog_perc_id
 
 from homology h
 
