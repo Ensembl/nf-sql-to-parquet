@@ -36,9 +36,17 @@ For each JSON config, add a `<Data_type>Schema` class containing the Pyarrow sch
 Data retrieved through `supplementary_data` is retrieved as arrays. To adjust to Data Connect, empty values in these columns are empty arrays.
 
 ## Run
+Get the help message.
+```
+nextflow run main.nf --help
+```
+
+Run the pipeline.
 ```
 nextflow run main.nf
 ```
+
+For the command ran on codon SLURM to generate files for the 241 genomes, see the `run_script` directory.
 
 ### Outputs
 Outputs are partitioned by species and organised this way:
