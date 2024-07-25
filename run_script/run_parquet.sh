@@ -14,6 +14,9 @@ export BASE_DIR=/hps/software/users/ensembl/production/vinay/modenv/production/v
 export METADATA_DB_URI=`mysql-ens-test-1-ensadmin details url`ensembl_genome_metadata
 export TAXONOMY_DB_URI=`mysql-ens-test-1-ensadmin details url`ensembl_genome_metadata
 
+#paths
+export SCRIPTS_DIR="/homes/sukanya/nf-sql-to-parquet/src/ensembl/production/sql_to_parquet"
+
 #core db info
 export CORE_DB_HOST_URI="mysql://anonymous@ensembldb.ensembl.org/"
 
@@ -39,5 +42,6 @@ nextflow run /homes/sukanya/nf-sql-to-parquet/nextflow/main.nf \
         --batch_size $BATCH_SIZE \
 	--genome_uuid a7335667-93e7-11ec-a39d-005056b38ce3 \
         --output_dir /hps/nobackup/flicek/ensembl/production/nextflow/sukanya_parquet_files/parquet_output \
-        --target_dir 241_genomes \
+        --target_dir homo_sapiens \
+        --scripts_dir $SCRIPTS_DIR \
         -resume
