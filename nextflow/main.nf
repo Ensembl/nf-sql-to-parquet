@@ -82,7 +82,7 @@ def read_json(json) {
 
 
 process SqlToParquet {
-    label 'mem2GB'
+    label 'mem4GB'
     publishDir "${params.output_dir}", mode: 'copy'
     
     tag {"$production_name - $query"}
@@ -105,16 +105,14 @@ process SqlToParquet {
     }
 
     def core_uri = "${params.core_db_host_uri}"
-    
-    // change database for compara query
-    println "$query"
 
     if ("$query".contains("compara")) {
       database = "${production_name}_compara_${params.compara_version}"
       core_uri = "${params.compara_uri}"
     } 
+
     """
-    ${params.scripts_dir}/main.py --query_config $query --main_query $sql -o ${params.output_dir} --genome_uuid $genome_uuid --production_name $production_name --core_uri $core_uri --database $database
+    ${params.scripts_dir}/main.py --query_config $query --main_query $sql -o ${params.target_dir} --genome_uuid $genome_uuid --production_name $production_name --core_uri $core_uri --database $database
     """
 }
 
