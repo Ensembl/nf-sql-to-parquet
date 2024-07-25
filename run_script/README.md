@@ -1,5 +1,5 @@
 # Running the pipeline on codon SLURM
-This script was used to generate Parquet files for the 241 genomes in `241_genomes.tsv` with core URI `mysql://anonymous@ensembldb.ensembl.org/` and compara URI `mysql://ensro@mysql-ens-sta-6:4695/` version `110` in July 2024.
+This script was used to generate Parquet files for the 241 genomes in `241_genomes.tsv` with core URI `mysql://anonymous@ensembldb.ensembl.org/` and Compara rapid release version `110` in July 2024.
 
 ## Load modules
 Create module if unavailable
