@@ -55,18 +55,20 @@ def helpMessage() {
   log.info"""
   Usage:
   nextflow run main.nf <ARGUMENTS>
-  --query_dir         Directory containing JSON files describing queries for each table
-  --output_dir        Output directory
-  --core_db_host_uri  Core database mysql URI
+  --query_dir           Directory containing JSON files describing queries for each table
 
-  --metadata_db_uri   Metadata database mysql URI
-  --taxonomy_db_dbname  
+  --output_dir          Output directory
+  --target_dir          Target directory (will be a subdirectory in output directory)
 
-  --dataset_type      List of dataset types to filter the query. Default is an empty list.
-  --dataset_status    List of dataset statuses to filter the query. Default is an empty list.
-  --update_dataset_status   Update the status of the selected datasets to the specified value.
-  --genome_uuid       List of genome UUIDs to filter the query. Default is an empty list.
-  --batch_size        Number of results to retrieve per batch. Default is 50.
+  --core_db_host_uri    Core database MySQL URI
+  --metadata_db_uri     Metadata database MySQL URI
+  --compara_uri         Compara database URI (rapid release)
+  --compara_version     Compara database version (rapid release)
+
+  --dataset_type        List of dataset types to filter the query. Default is an empty list.
+  --dataset_status      List of dataset statuses to filter the query. Default is an empty list.
+  --genome_uuid         List of genome UUIDs to filter the query. Default is an empty list.
+  --batch_size          Number of results to retrieve per batch. Default is 50.
 
   TODO: Fill the params for help message
   """.stripIndent()
@@ -117,6 +119,10 @@ process SqlToParquet {
 }
 
 workflow {
+    if(params.help){
+        helpMessage()
+        exit 1;
+    }
 
     def jsonSlurper       = new groovy.json.JsonSlurper()
     metadata_db_uri       = params.metadata_db_uri
