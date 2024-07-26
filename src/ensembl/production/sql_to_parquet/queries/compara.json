@@ -1,0 +1,4 @@
+{
+    "data_type" : "compara",
+    "main_sql" : "queries/create_parquet/compara.sql"
+}

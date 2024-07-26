@@ -55,6 +55,21 @@ def helpMessage() {
   log.info"""
   Usage:
   nextflow run main.nf <ARGUMENTS>
+  --query_dir           Directory containing JSON files describing queries for each table
+
+  --output_dir          Output directory
+  --target_dir          Target directory (will be a subdirectory in output directory)
+
+  --core_db_host_uri    Core database MySQL URI
+  --metadata_db_uri     Metadata database MySQL URI
+  --compara_uri         Compara database URI (rapid release)
+  --compara_version     Compara database version (rapid release)
+
+  --dataset_type        List of dataset types to filter the query. Default is an empty list.
+  --dataset_status      List of dataset statuses to filter the query. Default is an empty list.
+  --genome_uuid         List of genome UUIDs to filter the query. Default is an empty list.
+  --batch_size          Number of results to retrieve per batch. Default is 50.
+
   TODO: Fill the params for help message
   """.stripIndent()
 }
@@ -69,7 +84,7 @@ def read_json(json) {
 
 
 process SqlToParquet {
-    label 'mem2GB'
+    label 'mem4GB'
     publishDir "${params.output_dir}", mode: 'copy'
     
     tag {"$production_name - $query"}
@@ -83,19 +98,31 @@ process SqlToParquet {
 
     script:
     // get SQL script absolute path
+    
     def query_config = read_json("${query}")
     if ( "${query_config.main_sql}".split("\\.")[-1] == "sql" ){
         sql = "${params.scripts_dir}/${query_config.main_sql}"
     } else {
         sql = "${query_config.main_sql}"
     }
-    
+
+    def core_uri = "${params.core_db_host_uri}"
+
+    if ("$query".contains("compara")) {
+      database = "${production_name}_compara_${params.compara_version}"
+      core_uri = "${params.compara_uri}"
+    } 
+
     """
-    ${params.scripts_dir}/main.py --query_config $query --main_query $sql -o ${params.target_dir} --genome_uuid $genome_uuid --production_name $production_name --core_uri ${params.core_db_host_uri} --database $database
+    ${params.scripts_dir}/main.py --query_config $query --main_query $sql -o ${params.target_dir} --genome_uuid $genome_uuid --production_name $production_name --core_uri $core_uri --database $database
     """
 }
 
 workflow {
+    if(params.help){
+        helpMessage()
+        exit 1;
+    }
 
     def jsonSlurper       = new groovy.json.JsonSlurper()
     metadata_db_uri       = params.metadata_db_uri
